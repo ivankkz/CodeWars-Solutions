@@ -1,16 +1,14 @@
 package kyu6;
 
+import java.util.Arrays;
+
+//  Task description on https://www.codewars.com/kata/525f50e3b73515a6db000b83
 public class Phone {
+    private static final String PHONE_FORMAT = "(%d%d%d) %d%d%d-%d%d%d%d";
+
     public static String createPhoneNumber(int[] numbers) {
-        StringBuffer res = new StringBuffer("(");
+        Integer[] nums = Arrays.stream(numbers).boxed().toArray(Integer[]::new);
 
-        for (int i = 0; i < numbers.length; i++) {
-            res.append(numbers[i]);
-        }
-
-        res.insert(7, "-");
-        res.insert(4, ") ");
-
-        return new String(res);
+        return String.format(PHONE_FORMAT, nums);
     }
 }
