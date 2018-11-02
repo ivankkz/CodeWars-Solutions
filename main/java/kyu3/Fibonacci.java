@@ -7,25 +7,19 @@ import java.math.BigInteger;
 //  Space complexity is O(1)
 public class Fibonacci {
     public static BigInteger fib(BigInteger n) {
-        int count = n.intValue(); // because |n| < 2^32 - 1
+        int count = Math.abs(n.intValue()); // because |n| < 2^32 - 1
+        boolean isSameSign = (n.signum() == 1) ? true : (count % 2 == 1) ? true : false;
         BigInteger now = BigInteger.ZERO;
         BigInteger next = BigInteger.ONE;
         BigInteger temp;
 
-        if (count > 0) while (count != 0) {
+        while (count > 0) {
             temp = next;
             next = next.add(now);
             now = temp;
             count--;
         }
-        else while (count != 0) {
-            temp = now;
-            now = next.subtract(now);
-            next = temp;
-            count++;
-        }
 
-        return now;
+        return (isSameSign) ? now : now.negate();
     }
-
 }
