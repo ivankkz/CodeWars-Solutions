@@ -12,7 +12,10 @@ public class NumberTest {
         assertEquals(441, Number.nextBiggerNumber(414));
         assertEquals(414, Number.nextBiggerNumber(144));
         assertEquals(150238, Number.nextBiggerNumber(138520));
-        assertEquals(414, Number.nextBiggerNumber(144));
-        assertEquals(414, Number.nextBiggerNumber(144));
+        assertEquals(-1, Number.nextBiggerNumber(0));
+        assertEquals(-1, Number.nextBiggerNumber(9));
+        assertEquals(-1, Number.nextBiggerNumber(22));
+        assertEquals(-1, Number.nextBiggerNumber(8421));
+        assertEquals(-1, Number.nextBiggerNumber(9984210));
     }
 }
