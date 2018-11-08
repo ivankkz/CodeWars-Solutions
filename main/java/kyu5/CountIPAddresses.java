@@ -1,21 +1,19 @@
 package kyu5;
 
-import java.util.Arrays;
-
+//  Task description on https://www.codewars.com/kata/count-ip-addresses
 public class CountIPAddresses {
     public static long ipsBetween(String start, String end) {
-        long[] startArr = Arrays.stream(start.split("\\.")).mapToLong(Long::parseLong).toArray();
-        long[] endArr = Arrays.stream(end.split("\\.")).mapToLong(Long::parseLong).toArray();
-        long startLong = 0l;
-        long endLong= 0l;
+        return convertIPToLong(end) - convertIPToLong(start);
+    }
 
-        for (int i = 0; i < startArr.length; i++) {
-            startLong <<= 8;
-            endLong <<= 8;
-            startLong |= startArr[i];
-            endLong |= endArr[i];
+    public static long convertIPToLong(String ip) {
+        long res = 0l;
+
+        for (String s : ip.split("\\.")) {
+            res <<= 8;
+            res += Long.valueOf(s);
         }
 
-        return endLong - startLong;
+        return res;
     }
 }
