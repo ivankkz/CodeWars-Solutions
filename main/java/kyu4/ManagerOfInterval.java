@@ -1,11 +1,12 @@
 package kyu4;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
+//  Task description on https://www.codewars.com/kata/52b7ed099cdc285c300001cd
 public final class ManagerOfInterval {
     public static int sumIntervals(int[][] intervals) {
         Interval[] res;
+        int sum = 0;
 
         if (intervals == null)
             return -1;
@@ -15,12 +16,17 @@ public final class ManagerOfInterval {
             res[i] = new Interval(intervals[i][0], intervals[i][1]);
         }
 
-        return Interval.lengthIntervals(res);
+        res = Interval.mergeOverlappingIntervals(res);
+        for (int i = 0; i < res.length; i++) {
+            sum += Interval.lengthInterval(res[i]);
+        }
+
+        return sum;
     }
 }
 
 final class Interval {
-    private int start; // including starting number
+    private int start; // including starting number [1, 5] = {1, 2, 3, 4}
     private int end;   // not including ending number
 
     public Interval(int start, int end) {
@@ -28,11 +34,11 @@ final class Interval {
         this.end = end;
     }
 
-    public static int lengthIntervals(Interval[] arr) {
+    public static Interval[] mergeOverlappingIntervals(Interval[] arr) {
         boolean isUniqueInterval;
-        int sum = 0, j;
+        int j;
         ArrayList<Interval> overlappingIntervals = new ArrayList<>();
-        LinkedList<Interval> uniqueIntervals = new LinkedList<>();
+        ArrayList<Interval> uniqueIntervals = new ArrayList<>();
 
         for (int i = 0; i < arr.length; i++) {
             isUniqueInterval = true;
@@ -56,14 +62,10 @@ final class Interval {
             }
         }
 
-        for (Interval interval : uniqueIntervals) {
-            sum += lengthInterval(interval);
-        }
-
-        return sum;
+        return uniqueIntervals.stream().toArray(Interval[]::new);
     }
 
-    private static int lengthInterval(Interval A) {
+    public static int lengthInterval(Interval A) {
         return A.end - A.start;
     }
 

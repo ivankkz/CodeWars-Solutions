@@ -6,27 +6,19 @@ import java.util.Arrays;
 public class Number {
     public static long nextBiggerNumber(long n) {
         char[] digits = Long.toString(n).toCharArray();
-        int i = digits.length - 1;
-        int j;
 
-        do {
-            i--;
-        } while (i >= 0 && digits[i] >= digits[i + 1]);
-
-        if (i <= -1)
-            return -1;
-
-        j = i;
-
-        while (j + 1 < digits.length && digits[j + 1] > digits[i]) {
-            j++;
+        for (int i = digits.length - 2; i >= 0; i--) {
+            for (int j = digits.length - 1; j > i; j--) {
+                if (digits[i] < digits[j]) {
+                    char temp = digits[i];
+                    digits[i] = digits[j];
+                    digits[j] = temp;
+                    Arrays.sort(digits, i + 1, digits.length);
+                    return Long.valueOf(new String(digits));
+                }
+            }
         }
 
-        char temp = digits[i];
-        digits[i] = digits[j];
-        digits[j] = temp;
-
-        Arrays.sort(digits, i + 1, digits.length);
-        return Long.valueOf(new String(digits));
+        return -1;
     }
 }
