@@ -2,7 +2,19 @@ package kyu5;
 
 import java.util.*;
 
-public class FactDecom {
+/*
+Benchmark                 (num)  Mode  Cnt   Score   Error  Units
+BenchmarkTest.decomp     100000  avgt    2   0,047           s/op
+BenchmarkTest.decomp    1000000  avgt    2   0,872           s/op
+BenchmarkTest.decomp   10000000  avgt    2  16,127           s/op
+BenchmarkTest.decomp2    100000  avgt    2   0,036           s/op
+BenchmarkTest.decomp2   1000000  avgt    2   0,539           s/op
+BenchmarkTest.decomp2  10000000  avgt    2   9,966           s/op
+BenchmarkTest.decomp3    100000  avgt    2   0,044           s/op
+BenchmarkTest.decomp3   1000000  avgt    2   1,059           s/op
+BenchmarkTest.decomp3  10000000  avgt    2  26,802           s/op
+*/
+public class FactDecomp {
     public static String decomp(int n) {
         TreeMap<Integer, Integer> numFactors = new TreeMap<>();
         Integer[] primeNumbers = findPrimeNumbers((int) Math.floor(Math.sqrt(n)));
@@ -26,7 +38,6 @@ public class FactDecom {
             if (checkNum > 1)
                 addDivisorToFactors(checkNum, numFactors);
         }
-
 
         return createFactorialDecomposition(numFactors);
     }
@@ -62,6 +73,27 @@ public class FactDecom {
         return createFactorialDecomposition(countNumFactors(divisors));
     }
 
+    public static String decomp3(int n) {
+        int[] exponentsOfPrimes = new int[n + 1];
+        while (n > 1) {
+            int x = n--;
+            for (int i = 2; i <= Math.sqrt(x); i++)
+                if (x % i == 0) {
+                    x /= i;
+                    exponentsOfPrimes[i]++;
+                    i = 1;
+                }
+            exponentsOfPrimes[x]++;
+        }
+        StringBuilder result = new StringBuilder();
+        for (int i = 2; i < exponentsOfPrimes.length; i++) {
+            if (exponentsOfPrimes[i] == 0) continue;
+            if (exponentsOfPrimes[i] == 1) result.append(i + " * ");
+            if (exponentsOfPrimes[i] > 1) result.append(i + "^" + exponentsOfPrimes[i] + " * ");
+        }
+        return result.substring(0, result.length() - 3);
+    }
+
     static class DivisorsOfNumber {
         private int basic;
         private DivisorsOfNumber parent;
@@ -79,8 +111,8 @@ public class FactDecom {
             if (divisors[i] != null) {
                 DivisorsOfNumber temp = divisors[i];
 
-                while (temp != null){
-                    addDivisorToFactors(temp.basic,numFactors);
+                while (temp != null) {
+                    addDivisorToFactors(temp.basic, numFactors);
                     temp = temp.parent;
                 }
             }
