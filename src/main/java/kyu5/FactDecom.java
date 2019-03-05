@@ -4,7 +4,7 @@ import java.util.*;
 
 public class FactDecom {
     public static String decomp(int n) {
-        Map<Integer, Integer> numFactors = new TreeMap<>();
+        TreeMap<Integer, Integer> numFactors = new TreeMap<>();
         Integer[] primeNumbers = findPrimeNumbers((int) Math.floor(Math.sqrt(n)));
 
         for (int i = 2; i <= n; i++) {
@@ -29,6 +29,64 @@ public class FactDecom {
 
 
         return createFactorialDecomposition(numFactors);
+    }
+
+    public static String decomp2(int n) {
+        DivisorsOfNumber[] divisors = new DivisorsOfNumber[n + 1];
+        Integer[] primeNumbers = findPrimeNumbers((int) Math.floor(Math.sqrt(n)));
+
+        for (int i = 2; i <= n; i++) {
+            int checkNum = i;
+            int checkSqrtNum = (int) Math.sqrt(i);
+            int j = 0;
+            boolean findDivisor = false;
+
+            while (j < primeNumbers.length && checkSqrtNum >= primeNumbers[j]) {
+                int checkDivisor = primeNumbers[j];
+
+                if (checkNum % checkDivisor == 0) {
+                    if (checkNum / checkDivisor == 1)
+                        divisors[checkNum] = new DivisorsOfNumber(checkDivisor, null);
+                    else
+                        divisors[checkNum] = new DivisorsOfNumber(checkDivisor, divisors[checkNum / checkDivisor]);
+                    findDivisor = true;
+                    break;
+                }
+                j++;
+            }
+
+            if (!findDivisor)
+                divisors[checkNum] = new DivisorsOfNumber(checkNum, null);
+        }
+
+        return createFactorialDecomposition(countNumFactors(divisors));
+    }
+
+    static class DivisorsOfNumber {
+        private int basic;
+        private DivisorsOfNumber parent;
+
+        public DivisorsOfNumber(int basic, DivisorsOfNumber parent) {
+            this.basic = basic;
+            this.parent = parent;
+        }
+    }
+
+    private static TreeMap<Integer, Integer> countNumFactors(DivisorsOfNumber[] divisors) {
+        TreeMap<Integer, Integer> numFactors = new TreeMap<>();
+
+        for (int i = 0; i < divisors.length; i++) {
+            if (divisors[i] != null) {
+                DivisorsOfNumber temp = divisors[i];
+
+                while (temp != null){
+                    addDivisorToFactors(temp.basic,numFactors);
+                    temp = temp.parent;
+                }
+            }
+        }
+
+        return numFactors;
     }
 
     private static Integer[] findPrimeNumbers(int limit) {
@@ -56,14 +114,14 @@ public class FactDecom {
         return primeNumbers.toArray(new Integer[primeNumbers.size()]);
     }
 
-    private static void addDivisorToFactors(int divisor, Map<Integer, Integer> numFactors) {
+    private static void addDivisorToFactors(int divisor, TreeMap<Integer, Integer> numFactors) {
         if (numFactors.containsKey(divisor))
             numFactors.replace(divisor, numFactors.get(divisor) + 1);
         else
             numFactors.put(divisor, 1);
     }
 
-    private static String createFactorialDecomposition(Map<Integer, Integer> numFactors) {
+    private static String createFactorialDecomposition(TreeMap<Integer, Integer> numFactors) {
         StringBuffer res = new StringBuffer();
 
         for (Integer divisor : numFactors.keySet()) {
